@@ -1,0 +1,45 @@
+# Give your workflow a name (this appears in the GitHub Actions tab)
+name: Simple CI
+
+# Define when this workflow should run
+# In this case, it runs on push requests to the main branch
+on:
+  push:
+    branches: [ main ]
+
+# Jobs are the main building blocks of a workflow
+# Each job runs in a separate virtual machine
+jobs:
+  # This job is called "test" - you can name it anything you want
+  test:
+    # Specify which operating system to run on
+    # Other options: windows-latest, macos-latest
+    runs-on: ubuntu-latest
+    
+    # Steps are the individual tasks that run in sequence
+    steps:
+    # Step 1: Check out (download) your code from the repository
+    # This is always the first step - you need your code before you can test it!
+    - uses: actions/checkout@v4
+    
+    # Step 2: Set up Python
+    # This installs Python on the virtual machine so we can run Python code
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"  # Specify which Python version to use
+    
+    # Step 3: Install your project dependencies
+    # This reads requirements.txt and installs all the packages your project needs
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    # Step 4: Run a simple test
+    # This is where you actually test your code
+    # For now, we just verify that key packages can be imported
+    # In a real project, you might run: pytest, unittest, or other test commands
+    - name: Run tests
+      run: |
+        python -c "import numpy; import pandas; print('Basic imports successful!')"
